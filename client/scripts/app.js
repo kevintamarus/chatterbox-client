@@ -1,7 +1,8 @@
 // YOUR CODE HERE:
-$(document).ready(function() {
+$(document).ready(() => {
+  app.init();
 
-  $('#post-message').on('click', function() {
+  $('#post-message').on('click', () => {
     let message = $('#message').val();
     let userName = window.location.search.slice(10);
 
@@ -19,6 +20,10 @@ $(document).ready(function() {
     
     $('#message').val('');
   });
+  
+  $('#clear-message').on('click', () => {
+    app.clearMessages();
+  });
 });
 
 let app = {};
@@ -28,12 +33,14 @@ app.fetch = function() {
     url: this.server,
     type: 'GET',
     contentType: 'application/json',
-    success: (data) => console.log(data),
+    success: data => {
+      app.renderMessage(data);
+    },
     error: () => console.log('error')
   });
 };
 
-app.send = function(message) {
+app.send = message => {
   $.ajax({
     url: this.server,
     data: JSON.stringify(message),
@@ -44,6 +51,30 @@ app.send = function(message) {
   });
 };
 
-app.init = function() {};
+app.clearMessages = () => {
+  $('#chats').html('');
+};
+
+app.renderMessage = (data) => {
+  console.log(data);
+  let messages = data.results;
+  for (let i = 0; i < messages.length; i++) {
+    let message = messages[i];
+    let text = message.text;
+    let roomname = message.roomname;
+    let username = message.username;
+    
+    $('<div/>')
+    .text(username + ' ' + roomname + ' ' + text)
+    .prependTo('#chats');
+    
+  }
+};
+
+app.renderRoom = () => {};
+
+app.init = () => {
+  app.fetch();
+};
 
 app.server = 'http://parse.la.hackreactor.com/chatterbox/classes/messages';
