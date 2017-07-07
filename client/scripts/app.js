@@ -25,7 +25,7 @@ let app = {};
 
 app.fetch = function() {
   $.ajax({
-    url: 'http://parse.la.hackreactor.com/chatterbox/classes/messages',
+    url: this.server,
     type: 'GET',
     contentType: 'application/json',
     success: (data) => console.log(data),
@@ -35,7 +35,7 @@ app.fetch = function() {
 
 app.send = function(message) {
   $.ajax({
-    url: 'http://parse.la.hackreactor.com/chatterbox/classes/messages',
+    url: this.server,
     data: JSON.stringify(message),
     type: 'POST',
     contentType: 'application/json',
@@ -45,3 +45,5 @@ app.send = function(message) {
 };
 
 app.init = function() {};
+
+app.server = 'http://parse.la.hackreactor.com/chatterbox/classes/messages';
