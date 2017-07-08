@@ -2,6 +2,8 @@
 let app = {};
 
 app.server = 'http://parse.la.hackreactor.com/chatterbox/classes/messages';
+let lastID;
+let tempID;
 
 app.init = () => {
   app.fetch();
@@ -37,6 +39,7 @@ app.clearMessages = () => {
 
 app.renderMessage = data => {
   let messages = data.results;
+  lastID = messages[0].objectId;
   for (let i = 0; i < messages.length; i++) {
     let message = messages[i];
     let text = message.text;
@@ -44,8 +47,8 @@ app.renderMessage = data => {
     let username = message.username;
     
     $('<div/>')
-    .text(username + ' ' + roomname + ' ' + text)
-    .appendTo('#chats');
+      .text(username + ' ' + roomname + ' ' + text)
+      .appendTo('#chats');
     
   }
 };
@@ -61,21 +64,61 @@ app.renderRoom = () => {
   app.clearMessages();
 };
 
+app.updateFetch = () => {
+  $.ajax({
+    url: app.server,
+    type: 'GET',
+    data: {order: '-createdAt'},
+    contentType: 'application/json',
+    success: data => {
+      app.renderNewMessages(data);
+    },
+    error: () => console.log('Update Failed')
+  });
+  
+  setTimeout(app.updateFetch, 3000);
+};
+
+app.renderNewMessages = data => {
+  let messages = data.results;
+  
+  if (lastID !== messages[0].objectId) {
+
+    tempID = messages[0].objectId;
+    let index = 0;
+    let arr = [];
+    while (lastID !== messages[index].objectId) {
+      arr.unshift(messages[index]);
+      index++;
+    }
+    arr.forEach(function(obj) {
+      let text = obj.text;
+      let roomname = obj.roomname;
+      let username = message.username;
+      
+      $('<div/>')
+        .text(username + ' ' + roomname + ' ' + text)
+        .prependTo('#chats');
+    });
+    
+    lastID = tempID;
+  }
+};
+
 $(document).ready(() => {
 
   app.init();
+  app.updateFetch();
 
   $('#post-message').on('click', () => {
     let userName = window.location.search.slice(10);
     let message = $('#message').val();
     let roomName = $('#room-name').data('room');
-    console.log(roomName);
     let data = {
       username: userName,
       text: message,
       roomname: roomName
     };
-    console.log(data);
     app.send(data);
     
     $('#message').val('');
