@@ -48,8 +48,14 @@ app.renderMessage = data => {
       let roomname = message.roomname;
       let username = message.username;
       
+      //let elements = `<span class="username">${username}</span><div class="text">${text}</div>`;
+      let userDiv = $('<div/>').text(username).addClass('username');
+      let textDiv = $('<div/>').text(text).addClass('usertext');
+      
       $('<div/>')
-        .text(username + ' ' + roomname + ' ' + text)
+        .append(userDiv)
+        .append(textDiv)
+        .addClass('message')
         .appendTo('#chats');
     
     } 
@@ -60,7 +66,7 @@ app.renderMessage = data => {
     let username = data.username;
     
     $('<div/>')
-      .text(username + ' ' + roomname + ' ' + text)
+      .text(username + ' ' + text)
       .appendTo('#chats');
   }
 };
@@ -108,9 +114,14 @@ app.renderNewMessages = data => {
       let roomname = obj.roomname;
       let username = message.username;
       
+      let userDiv = $('<div/>').text(username).addClass('username');
+      let textDiv = $('<div/>').text(text).addClass('usertext');
+      
       $('<div/>')
-        .text(username + ' ' + roomname + ' ' + text)
-        .prependTo('#chats');
+        .append(userDiv)
+        .append(textDiv)
+        .addClass('message')
+        .appendTo('#chats');
     });
     
     lastID = tempID;
@@ -123,11 +134,11 @@ $(document).ready(() => {
   app.updateFetch();
 
   $('#post-message').on('click', () => {
-    let userName = window.location.search.slice(10);
+    let username = window.location.search.slice(10);
     let message = $('#message').val();
     let roomName = $('#room-name').data('room');
     let data = {
-      username: userName,
+      username: username,
       text: message,
       roomname: roomName
     };
