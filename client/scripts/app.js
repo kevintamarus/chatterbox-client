@@ -121,7 +121,7 @@ app.renderNewMessages = data => {
         .append(userDiv)
         .append(textDiv)
         .addClass('message')
-        .appendTo('#chats');
+        .prependTo('#chats');
     });
     
     lastID = tempID;
