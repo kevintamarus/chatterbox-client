@@ -1,14 +1,20 @@
 // YOUR CODE HERE:
 $(document).ready(() => {
   app.init();
+  
+  $('#make-room').on('click', () => {
+    let newRoomName = prompt('Name your room:');
+    $('#room-name').text(newRoomName);
+    
+    let newOption = `<option value=${newRoomName} selected>${newRoomName}</option>`;
+    $('select').append(newOption);
+    
+    app.clearMessages();
+  });
 
   $('#post-message').on('click', () => {
     let message = $('#message').val();
     let userName = window.location.search.slice(10);
-
-    $('<div/>')
-      .text(message)
-      .prependTo('#chats');
     
     var data = {
       username: userName,
@@ -28,10 +34,11 @@ $(document).ready(() => {
 
 let app = {};
 
-app.fetch = function() {
+app.fetch = () => {
   $.ajax({
-    url: this.server,
+    url: app.server,
     type: 'GET',
+    data: {order: '-createdAt'},
     contentType: 'application/json',
     success: data => {
       app.renderMessage(data);
@@ -42,11 +49,11 @@ app.fetch = function() {
 
 app.send = message => {
   $.ajax({
-    url: this.server,
+    url: app.server,
     data: JSON.stringify(message),
     type: 'POST',
     contentType: 'application/json',
-    success: () => console.log('message sent'),
+    success: (data) => console.log('message sent', data),
     error: () => console.log('message not sent')
   });
 };
@@ -55,9 +62,9 @@ app.clearMessages = () => {
   $('#chats').html('');
 };
 
-app.renderMessage = (data) => {
-  console.log(data);
+app.renderMessage = data => {
   let messages = data.results;
+  console.log(data);
   for (let i = 0; i < messages.length; i++) {
     let message = messages[i];
     let text = message.text;
@@ -66,7 +73,7 @@ app.renderMessage = (data) => {
     
     $('<div/>')
     .text(username + ' ' + roomname + ' ' + text)
-    .prependTo('#chats');
+    .appendTo('#chats');
     
   }
 };

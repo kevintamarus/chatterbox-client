@@ -28,16 +28,17 @@
       <h1>chatterbox</h1>
       <!-- Your HTML goes here! -->
       <div class="room-select">
-        <button onclick="function here" class="button">Room</button>
-        <div id="dropdown">
-          <a href="#">link 1</a>
-          <a href="#">link 2</a>
-        </div>
+        <button id="make-room">Create New Room</button>
+        <select name="room">
+          <option value="lobby" selected>Lobby</option>
+          <option value="testroom1">Test Room #1</option>
+        </select>
       </div>
       <input id="message" type="text" value="">
       <button id="post-message">Submit</button>
       <button id="clear-message">Clear</button>
     </div>
+    <div id="room-name">Random Room</div>
     <div id="chats"></div>
   </body>
 </html>
