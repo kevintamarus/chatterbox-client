@@ -38,18 +38,30 @@ app.clearMessages = () => {
 };
 
 app.renderMessage = data => {
-  let messages = data.results;
-  lastID = messages[0].objectId;
-  for (let i = 0; i < messages.length; i++) {
-    let message = messages[i];
-    let text = message.text;
-    let roomname = message.roomname;
-    let username = message.username;
+  
+  if (Array.isArray(data.results)) {
+    let messages = data.results;
+    lastID = messages[0].objectId;
+    for (let i = 0; i < messages.length; i++) {
+      let message = messages[i];
+      let text = message.text;
+      let roomname = message.roomname;
+      let username = message.username;
+      
+      $('<div/>')
+        .text(username + ' ' + roomname + ' ' + text)
+        .appendTo('#chats');
+    
+    } 
+  } else {
+    // For test case where input is a message object instead of a data object
+    let text = data.text;
+    let roomname = data.roomname;
+    let username = data.username;
     
     $('<div/>')
       .text(username + ' ' + roomname + ' ' + text)
       .appendTo('#chats');
-    
   }
 };
 
