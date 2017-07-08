@@ -49,6 +49,7 @@ app.renderMessage = data => {
       let username = message.username;
       
       //let elements = `<span class="username">${username}</span><div class="text">${text}</div>`;
+      if(roomname === $('#room-name').html().toLowerCase() ) {
       let userDiv = $('<div/>').text(username).addClass('username');
       let textDiv = $('<div/>').text(text).addClass('usertext');
       
@@ -57,6 +58,7 @@ app.renderMessage = data => {
         .append(textDiv)
         .addClass('message')
         .appendTo('#chats');
+      }
     
     } 
   } else {
@@ -73,7 +75,7 @@ app.renderMessage = data => {
 
 app.renderRoom = () => {
   let newRoomName = prompt('Name your room:');
-  let newOption = `<option value=${newRoomName.toLowerCase()} selected>${newRoomName}</option>`;
+  let newOption = `<option value=${newRoomName.toLowerCase().split(' ').join('-')} selected>${newRoomName}</option>`;
   $('select').append(newOption);
   $('#room-name')
     .text(newRoomName)
@@ -128,6 +130,10 @@ app.renderNewMessages = data => {
   }
 };
 
+app.handleUsernameClick = () => {};
+
+app.handleSubmit = () => {};
+
 $(document).ready(() => {
 
   app.init();
@@ -156,7 +162,9 @@ $(document).ready(() => {
   });
 
   $('select').change(() => {
-    let room = $('select').val();
+    app.clearMessages();
+    app.init();
+    let room = $('select').val().split('-').join(' ');
     $('#room-name')
       .text(room)
       .attr('data-room', room.toLowerCase());
